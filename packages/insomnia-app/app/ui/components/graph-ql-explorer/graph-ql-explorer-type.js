@@ -82,47 +82,49 @@ class GraphQLExplorerType extends React.PureComponent<Props> {
       <React.Fragment>
         <h2 className="graphql-explorer__subheading">Fields</h2>
         <ul className="graphql-explorer__defs">
-          {Object.keys(fields).map(key => {
-            const field: GraphQLField<any, any> = (fields[key]: any);
+          {Object.keys(fields)
+            .sort()
+            .map(key => {
+              const field: GraphQLField<any, any> = (fields[key]: any);
 
-            let argLinks = null;
-            const args = (field: any).args;
-            if (args && args.length) {
-              argLinks = (
-                <React.Fragment>
-                  (
-                  {args.map(a => (
-                    <div key={a.name} className="graphql-explorer__defs__arg">
-                      <span className="info">{a.name}</span>:{' '}
-                      <GraphQLExplorerTypeLink onNavigate={onNavigateType} type={a.type} />
-                    </div>
-                  ))}
-                  )
-                </React.Fragment>
+              let argLinks = null;
+              const args = (field: any).args;
+              if (args && args.length) {
+                argLinks = (
+                  <React.Fragment>
+                    (
+                    {args.map(a => (
+                      <div key={a.name} className="graphql-explorer__defs__arg">
+                        <span className="info">{a.name}</span>:{' '}
+                        <GraphQLExplorerTypeLink onNavigate={onNavigateType} type={a.type} />
+                      </div>
+                    ))}
+                    )
+                  </React.Fragment>
+                );
+              }
+
+              const fieldLink = (
+                <GraphQLExplorerFieldLink onNavigate={this._handleNavigateField} field={field} />
               );
-            }
 
-            const fieldLink = (
-              <GraphQLExplorerFieldLink onNavigate={this._handleNavigateField} field={field} />
-            );
+              const typeLink = (
+                <GraphQLExplorerTypeLink onNavigate={this._handleNavigateType} type={field.type} />
+              );
 
-            const typeLink = (
-              <GraphQLExplorerTypeLink onNavigate={this._handleNavigateType} type={field.type} />
-            );
-
-            const description = field.description;
-            return (
-              <li key={key}>
-                {fieldLink}
-                {argLinks}: {typeLink} <GraphQLDefaultValue field={field} />
-                {description && (
-                  <div className="graphql-explorer__defs__description">
-                    <MarkdownPreview markdown={description} />
-                  </div>
-                )}
-              </li>
-            );
-          })}
+              const description = field.description;
+              return (
+                <li key={key}>
+                  {fieldLink}
+                  {argLinks}: {typeLink} <GraphQLDefaultValue field={field} />
+                  {description && (
+                    <div className="graphql-explorer__defs__description">
+                      <MarkdownPreview markdown={description} />
+                    </div>
+                  )}
+                </li>
+              );
+            })}
         </ul>
       </React.Fragment>
     );
